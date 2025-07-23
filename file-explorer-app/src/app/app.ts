@@ -10,7 +10,8 @@ import { FileForm } from './components/file-form/file-form';
   standalone: true,
   imports: [RouterOutlet, FileExplorer, Folder, File, FileForm],
   templateUrl: './app.html',
-  styleUrls: ['./app.css']
+  styleUrls: ['./app.css'],
+  providers: [FileSystem]
 })
 export class App {
   protected title = 'file-explorer-app';
