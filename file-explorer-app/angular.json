@@ -45,10 +45,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "file-explorer-app:build:production"
+              "buildTarget": "file-explorer-app:build:production"
             },
             "development": {
-              "browserTarget": "file-explorer-app:build:development"
+              "buildTarget": "file-explorer-app:build:development"
             }
           },
           "defaultConfiguration": "development"
