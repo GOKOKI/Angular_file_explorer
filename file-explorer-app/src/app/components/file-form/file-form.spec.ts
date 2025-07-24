@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FileForm } from './file-form';
+import { FileForm } from './FileForm';
 
 describe('FileForm', () => {
   let component: FileForm;

@@ -1,1 +1,19 @@
-<p>file-form works!</p>
+<div class="form-container">
+  <h3>Ajouter un élément</h3>
+  <form (ngSubmit)="onSubmit()">
+    <input 
+      type="text" 
+      [(ngModel)]="itemName" 
+      name="itemName" 
+      placeholder="Nom" 
+      required
+    >
+    
+    <select [(ngModel)]="itemType" name="itemType">
+      <option value="file">Fichier</option>
+      <option value="folder">Dossier</option>
+    </select>
+
+    <button type="submit">{{ isEditMode ? 'Modifier' : 'Ajouter' }}</button>
+  </form>
+</div>
