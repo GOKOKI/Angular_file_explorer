@@ -1,1 +1,21 @@
-<p>folder works!</p>
+<ul *ngIf="folders && !node">
+    <li *ngFor="let folder of folders">
+      <app-folder [node]="folder"></app-folder>
+    </li>
+  </ul>
+  
+  <div *ngIf="node">
+    <span *ngIf="node.type === 'folder'">
+      <span (click)="toggle()" style="cursor:pointer;">
+        {{ isOpen ? '📂' : '📁' }} {{ node.name }}
+      </span>
+      <ul *ngIf="isOpen && node.children">
+        <li *ngFor="let child of node.children">
+          <app-folder [node]="child"></app-folder>
+        </li>
+      </ul>
+    </span>
+    <span *ngIf="node.type === 'file'">
+        📄 {{ node.name }}
+    </span>
+  </div>
