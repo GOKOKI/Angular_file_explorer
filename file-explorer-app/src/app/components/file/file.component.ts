@@ -24,14 +24,13 @@ import { FormsModule } from '@angular/forms';
   standalone: true, // ✅ important !
   imports: [CommonModule, FormsModule], // ✅ pour *ngIf, [(ngModel)], etc.
   templateUrl: './file.component.html',
-  styleUrls: ['./file.component.css']
+  styleUrls: ['./file.component.css'],
 })
-
 export class FileComponent {
   @Input() file!: FileItem;
   @Input() isSelected: boolean = false;
   @Input() isRenaming: boolean = false;
-  
+
   @Output() fileEvent = new EventEmitter<FileEvent>();
 
   newFileName: string = '';
@@ -44,7 +43,7 @@ export class FileComponent {
   onFileClick() {
     this.fileEvent.emit({
       type: 'select',
-      file: this.file
+      file: this.file,
     });
   }
 
@@ -58,7 +57,7 @@ export class FileComponent {
     if (confirm(`Êtes-vous sûr de vouloir supprimer "${this.file.name}" ?`)) {
       this.fileEvent.emit({
         type: 'delete',
-        file: this.file
+        file: this.file,
       });
     }
     this.showContextMenu = false;
@@ -68,7 +67,7 @@ export class FileComponent {
     this.isRenaming = true;
     this.newFileName = this.file.name;
     this.showContextMenu = false;
-    
+
     // Focus sur l'input après un petit délai pour s'assurer qu'il est rendu
     setTimeout(() => {
       const input = document.querySelector('.rename-input') as HTMLInputElement;
@@ -84,7 +83,7 @@ export class FileComponent {
       this.fileEvent.emit({
         type: 'rename',
         file: this.file,
-        newName: this.newFileName.trim()
+        newName: this.newFileName.trim(),
       });
     }
     this.isRenaming = false;
@@ -106,38 +105,38 @@ export class FileComponent {
   getFileIcon(): string {
     const extension = this.file.extension.toLowerCase();
     const iconMap: { [key: string]: string } = {
-      'pdf': '📄',
-      'doc': '📝',
-      'docx': '📝',
-      'txt': '📄',
-      'jpg': '🖼️',
-      'jpeg': '🖼️',
-      'png': '🖼️',
-      'gif': '🖼️',
-      'mp4': '🎥',
-      'avi': '🎥',
-      'mp3': '🎵',
-      'wav': '🎵',
-      'zip': '📦',
-      'rar': '📦',
-      'js': '💻',
-      'ts': '💻',
-      'html': '🌐',
-      'css': '🎨',
-      'json': '⚙️',
-      'xml': '⚙️'
+      pdf: '📄',
+      doc: '📝',
+      docx: '📝',
+      txt: '📄',
+      jpg: '🖼️',
+      jpeg: '🖼️',
+      png: '🖼️',
+      gif: '🖼️',
+      mp4: '🎥',
+      avi: '🎥',
+      mp3: '🎵',
+      wav: '🎵',
+      zip: '📦',
+      rar: '📦',
+      js: '💻',
+      ts: '💻',
+      html: '🌐',
+      css: '🎨',
+      json: '⚙️',
+      xml: '⚙️',
     };
-    
+
     return iconMap[extension] || '📄';
   }
 
   formatFileSize(bytes: number): string {
     if (bytes === 0) return '0 B';
-    
+
     const k = 1024;
     const sizes = ['B', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    
+
     return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
   }
 
@@ -147,7 +146,7 @@ export class FileComponent {
       month: '2-digit',
       year: 'numeric',
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
     }).format(date);
   }
 

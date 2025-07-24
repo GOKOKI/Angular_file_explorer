@@ -12,7 +12,7 @@ import { FileSystem } from './services/file-system';
   imports: [RouterOutlet, FileExplorer, Folder, FileComponent, FileForm],
   templateUrl: './app.html',
   styleUrls: ['./app.css'],
-  providers: [FileSystem]
+  providers: [FileSystem],
 })
 export class AppComponent {
   protected title = 'file-explorer-app';
