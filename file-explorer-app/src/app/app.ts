@@ -3,7 +3,7 @@ import { RouterOutlet } from '@angular/router';
 import { FileExplorer } from './components/file-explorer/file-explorer';
 import { Folder } from './components/folder/folder';
 import { File } from './components/file/file';
-import { FileForm } from './components/file-form/file-form';
+import { FileForm } from './components/file-form/FileForm';
 
 @Component({
   selector: 'app-root',
