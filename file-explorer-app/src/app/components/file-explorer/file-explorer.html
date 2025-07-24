@@ -1,1 +1,116 @@
-<p>file-explorer works!</p>
+<div class="explorer-layout">
+  <div class="explorer-sidebar">
+    <div *ngIf="favorites.length > 0" class="favorites-bar">
+      <div class="favorites-title">Favoris</div>
+      <div *ngFor="let favId of favorites" class="favorite-item">
+        <span (click)="goToFavorite(favId)">
+          ⭐ {{ findNodeById(rootFolder, favId)?.name || 'Dossier inconnu' }}
+        </span>
+        <button class="fav-remove" *ngIf="findNodeById(rootFolder, favId) as favNode" (click)="toggleFavorite(favNode)" title="Retirer des favoris">✖️</button>
+      </div>
+      <hr />
+    </div>
+    <app-folder-tree [node]="rootFolder" [selectedId]="currentFolder.id" (folderSelected)="openFolder($event)"></app-folder-tree>
+  </div>
+  <div class="explorer-main">
+    <div class="explorer-toolbar">
+      <button (click)="goBack()">⏴</button>
+      <button (click)="goForward()">⏵</button>
+      <button (click)="goUp()">⬆</button>
+      <input class="address-bar" [value]="currentPath" readonly />
+      <input class="search-bar" placeholder="Rechercher..." [(ngModel)]="searchTerm" (input)="onSearch()" />
+    </div>
+    <div class="explorer-actions">
+      <button (click)="onNewFolder()">Nouveau dossier</button>
+      <button (click)="onNewFile()">Nouveau fichier</button>
+      <button (click)="toggleShowUploads()">Voir les fichiers actuels</button>
+      <input type="file" multiple webkitdirectory (change)="onFileUpload($event)" />
+    </div>
+    <div *ngIf="showUploads" class="uploads-table">
+      <table>
+        <thead>
+          <tr>
+            <th>Nom du fichier</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let file of uploadedFiles">
+            <td>{{ file.name }}</td>
+            <td>
+              <button (click)="downloadFile(file)">Télécharger</button>
+              <button (click)="removeFile(file)">Supprimer</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div *ngIf="showCreateForm" class="create-form">
+      <app-file-form
+        [isEditMode]="false"
+        [currentNode]="null"
+        [itemType]="createType"
+        (formSubmitted)="onCreateItem($event)"
+        (cancel)="onCancelCreate()"
+      ></app-file-form>
+      <button (click)="onCancelCreate()">Annuler</button>
+    </div>
+    <div *ngIf="selectedIds.length > 0" class="multi-actions-bar">
+      <span>{{ selectedIds.length }} sélectionné(s)</span>
+      <button (click)="deleteSelected()">Supprimer</button>
+      <button (click)="copySelected()">Copier</button>
+      <button (click)="cutSelected()">Couper</button>
+      <button *ngIf="clipboard" (click)="onContextAction('paste')">Coller ici</button>
+    </div>
+    <div class="explorer-details">
+      <table tabindex="0" (keydown)="onTableKeydown($event)">
+        <thead>
+          <tr>
+            <th><input type="checkbox" [checked]="allSelected()" (change)="toggleSelectAll($event)" /></th>
+            <th (click)="sortBy('name')">Nom</th>
+            <th (click)="sortBy('type')">Type</th>
+            <th (click)="sortBy('size')">Taille</th>
+            <th (click)="sortBy('date')">Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of sortedChildren(); let i = index"
+              (contextmenu)="onContextMenu($event, item)"
+              [class.active-row]="i === activeIndex"
+              (mouseenter)="setActiveIndex(i)">
+            <td><input type="checkbox" [checked]="isSelected(item.id)" (change)="toggleSelect(item.id, $event)" /></td>
+            <td>
+              <ng-container *ngIf="renamingId !== item.id">
+                <span *ngIf="item.type === 'folder'" (dblclick)="startRename(item)" (click)="openFolder(item)" style="cursor:pointer">📁 {{ item.name }}</span>
+                <span *ngIf="item.type === 'file'" (dblclick)="startRename(item)">{{ item.name }}</span>
+              </ng-container>
+              <ng-container *ngIf="renamingId === item.id">
+                <input
+                  id="rename-input-{{item.id}}"
+                  [(ngModel)]="newName"
+                  (keydown.enter)="confirmRename(item)"
+                  (keydown.escape)="cancelRename()"
+                  (blur)="confirmRename(item)"
+                  class="rename-inline-input"
+                  style="width: 80%"
+                />
+              </ng-container>
+            </td>
+            <td>{{ item.type === 'folder' ? 'Dossier' : item.extension || 'Fichier' }}</td>
+            <td>{{ item.type === 'file' ? (item.size | number) + ' o' : '' }}</td>
+            <td>{{ item.modifiedDate ? (item.modifiedDate | date:'short') : '' }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <div *ngIf="contextMenu.visible" class="context-menu" [style.top.px]="contextMenu.y" [style.left.px]="contextMenu.x">
+        <div class="context-item" (click)="onContextAction('rename')">✏️ Renommer</div>
+        <div class="context-item" (click)="onContextAction('delete')">🗑️ Supprimer</div>
+        <div class="context-item" (click)="onContextAction('copy')">📋 Copier</div>
+        <div class="context-item" (click)="onContextAction('cut')">✂️ Couper</div>
+        <div class="context-item" *ngIf="clipboard" (click)="onContextAction('paste')">📥 Coller ici</div>
+        <div class="context-item" *ngIf="contextMenu.target?.type === 'folder'" (click)="onContextAction('favorite')">⭐ Favori</div>
+      </div>
+      <div *ngIf="contextMenu.visible" class="context-overlay" (click)="closeContextMenu()"></div>
+    </div>
+  </div>
+</div>

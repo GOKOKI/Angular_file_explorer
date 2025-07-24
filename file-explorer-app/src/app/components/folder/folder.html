@@ -1,4 +1,20 @@
-<app-file-form 
-  [isEditMode]="false" 
-  (formSubmitted)="onAddItem($event)">
-</app-file-form>
+<div class="folder-container">
+  <div class="folder-header" (click)="isOpen = !isOpen">
+    <span class="folder-icon">{{ isOpen ? '📂' : '📁' }}</span>
+    <span class="folder-name">{{ currentFolder.name }}</span>
+    <span class="toggle-arrow">{{ isOpen ? '▼' : '▶' }}</span>
+  </div>
+
+  <div class="folder-content" *ngIf="isOpen">
+    <!-- Formulaire d'ajout -->
+    <app-file-form [isEditMode]="false" (formSubmitted)="onAddItem($event)"></app-file-form>
+
+    <!-- Sous-dossiers -->
+    <div class="folder-children" *ngIf="currentFolder.children">
+      <ng-container *ngFor="let child of currentFolder.children">
+        <app-folder *ngIf="child.type === 'folder'" [currentFolder]="child"></app-folder>
+        <app-file *ngIf="child.type === 'file'" [file]="toFileItem(child)" (fileEvent)="onFileEvent($event)"></app-file>
+      </ng-container>
+    </div>
+  </div>
+</div>

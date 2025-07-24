@@ -8,15 +8,16 @@ import { FileNode } from '../../models/file-node';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './file-form.html',
-  styleUrls: ['./file-form.scss']
+  styleUrls: ['./file-form.css']
 })
 export class FileForm {
   @Input() isEditMode: boolean = false;
   @Input() currentNode: FileNode | null = null;
+  @Input() itemType: 'file' | 'folder' = 'file';
   @Output() formSubmitted = new EventEmitter<{ name: string, type: 'file' | 'folder' }>();
+  @Output() cancel = new EventEmitter<void>();
 
   itemName: string = '';
-  itemType: 'file' | 'folder' = 'file';
 
   onSubmit() {
     if (this.itemName.trim()) {
@@ -26,5 +27,8 @@ export class FileForm {
       });
       this.itemName = '';
     }
+  }
+  onCancel() {
+    this.cancel.emit();
   }
 }
