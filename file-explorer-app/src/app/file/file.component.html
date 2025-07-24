@@ -1,0 +1,67 @@
+<div class="file-item" 
+     [class.selected]="isSelected"
+     [class.renaming]="isRenaming"
+     (click)="onFileClick()"
+     (contextmenu)="onRightClick($event)">
+  
+  <!-- Icône du fichier -->
+  <div class="file-icon">
+    {{ getFileIcon() }}
+  </div>
+  
+  <!-- Contenu du fichier -->
+  <div class="file-content">
+    <!-- Nom du fichier (mode normal) -->
+    <div class="file-name" *ngIf="!isRenaming">
+      {{ file.name }}
+    </div>
+    
+    <!-- Input de renommage -->
+    <input 
+      *ngIf="isRenaming"
+      type="text"
+      class="rename-input"
+      [(ngModel)]="newFileName"
+      (keydown)="onKeyPress($event)"
+      (blur)="onConfirmRename()"
+      (click)="$event.stopPropagation()">
+    
+    <!-- Informations du fichier -->
+    <div class="file-info" *ngIf="!isRenaming">
+      <span class="file-size">{{ formatFileSize(file.size) }}</span>
+      <span class="file-date">{{ formatDate(file.lastModified) }}</span>
+    </div>
+  </div>
+  
+  <!-- Boutons d'action (visibles au survol ou si sélectionné) -->
+  <div class="file-actions" *ngIf="isSelected && !isRenaming">
+    <button class="action-btn rename-btn" 
+            (click)="onRenameFile(); $event.stopPropagation()"
+            title="Renommer">
+      ✏️
+    </button>
+    <button class="action-btn delete-btn" 
+            (click)="onDeleteFile(); $event.stopPropagation()"
+            title="Supprimer">
+      🗑️
+    </button>
+  </div>
+  
+  <!-- Menu contextuel -->
+  <div class="context-menu" *ngIf="showContextMenu" (click)="$event.stopPropagation()">
+    <div class="context-item" (click)="onRenameFile()">
+      <span class="context-icon">✏️</span>
+      <span>Renommer</span>
+    </div>
+    <div class="context-item" (click)="onDeleteFile()">
+      <span class="context-icon">🗑️</span>
+      <span>Supprimer</span>
+    </div>
+  </div>
+</div>
+
+<!-- Overlay pour fermer le menu contextuel -->
+<div class="context-overlay" 
+     *ngIf="showContextMenu" 
+     (click)="onDocumentClick()">
+</div>
